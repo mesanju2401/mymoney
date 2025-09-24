@@ -78,8 +78,72 @@ class APIClient:
         except:
             return None
     
-    def delete_transaction(self, transaction_id: int) -> bool:
+        def delete_transaction(self, transaction_id: int) -> bool:
         """Delete transaction"""
         try:
             response = requests.delete(
-                f"{self.base_url}/api/transactions/{transaction_﻿ 
+                f"{self.base_url}/api/transactions/{transaction_id}",
+                headers=self.headers
+            )
+            return response.status_code == 200
+        except:
+            return False
+    
+    def get_monthly_summary(self, month: str) -> Dict:
+        """Get monthly summary"""
+        try:
+            response = requests.get(
+                f"{self.base_url}/api/analytics/monthly-summary/{month}",
+                headers=self.headers
+            )
+            if response.status_code == 200:
+                return response.json()
+            return {}
+        except:
+            return {}
+    
+    def get_category_breakdown(self, month: Optional[str] = None) -> List[Dict]:
+        """Get category breakdown"""
+        try:
+            params = {"month": month} if month else {}
+            response = requests.get(
+                f"{self.base_url}/api/analytics/category-breakdown",
+                headers=self.headers,
+                params=params
+            )
+            if response.status_code == 200:
+                return response.json()
+            return []
+        except:
+            return []
+    
+    def get_budgets(self) -> List[Dict]:
+        """Get user budgets"""
+        try:
+            response = requests.get(
+                f"{self.base_url}/api/analytics/budgets",
+                headers=self.headers
+            )
+            if response.status_code == 200:
+                return response.json()
+            return []
+        except:
+            return []
+    
+    def add_budget(self, budget: Dict) -> Optional[Dict]:
+        """Add new budget"""
+        try:
+            response = requests.post(
+                f"{self.base_url}/api/analytics/budgets",
+                json=budget,
+                headers=self.headers
+            )
+            if response.status_code == 200:
+                return response.json()
+            return None
+        except:
+            return None
+    
+    def get_categories(self) -> List[str]:
+        """Get available categories"""
+        return ["Food", "Transport", "Shopping", "Bills", "Entertainment", "Health", "Other"]

@@ -27,5 +27,20 @@ def get_category_breakdown(
     current_user: models.User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    breakdown = crud.get_category_breakdown(db, user_id=current_user.id, month=month)
-    return [{"category": cat, "total": total} for cat, total in﻿ 
+        breakdown = crud.get_category_breakdown(db, user_id=current_user.id, month=month)
+    return [{"category": cat, "total": total} for cat, total in breakdown]
+
+@router.get("/budgets", response_model=List[schemas.Budget])
+def get_budgets(
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    return crud.get_budgets(db, user_id=current_user.id)
+
+@router.post("/budgets", response_model=schemas.Budget)
+def create_budget(
+    budget: schemas.BudgetCreate,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    return crud.create_budget(db=db, budget=budget, user_id=current_user.id)
